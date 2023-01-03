@@ -12,6 +12,7 @@ parser.add_argument("wafw00f_output", help="The output file name for wafw00f out
 parser.add_argument("-k", "--keep", action="store_true", help="Keeps the Amass and Subfinder output files separately (For Subdomain Enumeration)")
 parser.add_argument("-v", "--verbose", action="store_true", help="Show the output of the Amass and Subfinder commands in real time (For Subdomain Enumeration)")
 parser.add_argument("-n", action="store_true", help="Perform an extensive nmap scan on the subdomains. (Will not perform UDP port scans)")
+parser.add_argument("-l", "--logging", action="store_true", help="Enable logging for amass")
 args = parser.parse_args()
 
 # This needs to be made more efficient by editing subscan.py
@@ -28,6 +29,8 @@ if args.keep:
 if args.verbose:
 	subdomain_enumeration_command.append("-v")
 	wafw00f_enumeration_command.append("-vv")
+if args.logging:
+	subdomain_enumeration_command.append("-l")
 
 # Perform Subdomain Enumeration
 subprocess.run(subdomain_enumeration_command)

@@ -20,7 +20,7 @@ output_file = "{}.txt".format(args.output_file)
 # Open the output file for writing
 with open(output_file, "w") as f:
 	# Iterate over the list of domains
-	amass_command = ["amass", "enum", "-dns-qps", "3000", "-brute", "-df",  args.input_file, "-o", amass_file, "-config", "~/.config/amass/config.ini"]
+	amass_command = ["amass", "enum", "-dns-qps", "3000", "-brute", "-df",  args.input_file, "-o", amass_file, "-config", os.path.expanduser("~/.config/amass/config.ini")]
 	if args.verbose:
 		amass_command.append("-v")
 		amass_command.append("-src")

@@ -11,7 +11,7 @@ parser.add_argument("dns_output", help="The output file name for the dns_info.py
 parser.add_argument("wafw00f_output", help="The output file name for wafw00f output")
 parser.add_argument("-k", "--keep", action="store_true", help="Keeps the Amass and Subfinder output files separately (For Subdomain Enumeration)")
 parser.add_argument("-v", "--verbose", action="store_true", help="Show the output of the Amass and Subfinder commands in real time (For Subdomain Enumeration)")
-parser.add_argument("-n", action="store_true", help="Perform an extensive nmap scan on the subdomains. (Will not perform UDP port scans)")
+parser.add_argument("-m", action="store_true", help="Perform a quick dnmasscan on all ports of all subdomains.")
 parser.add_argument("-l", "--logging", action="store_true", help="Enable logging for amass")
 parser.add_argument("-w", "--wordlist", help="Specify a wordlist for brute forcing", default=None)
 args = parser.parse_args()
@@ -46,12 +46,12 @@ subprocess.run(dns_enumeration_command)
 subprocess.run(wafw00f_enumeration_command)
 
 # Perform a dnmasscan
-if args.n:
+if args.m:
 	masscan_output_name = "{}-masscan".format(args.subdomain_output)
-	nmap_command = ["sudo", "dnmasscan", subdomain_file_name, masscan_output_name, "-p-", "--max-rate", "18000"]
+	masscan_command = ["sudo", "dnmasscan", subdomain_file_name, masscan_output_name, "-p-", "--max-rate", "18000"]
 	if args.verbose:
-		nmap_command.append("-v")
-	subprocess.run(nmap_command)
+		masscan_command.append("-v")
+	subprocess.run(masscan_command)
 
 print("-------------------------------------------")
 print("ENUMERATION COMPLETE")

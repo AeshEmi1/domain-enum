@@ -45,10 +45,10 @@ subprocess.run(dns_enumeration_command)
 # Perform WAF scan
 subprocess.run(wafw00f_enumeration_command)
 
-# Perform an nmap scan
+# Perform a dnmasscan
 if args.n:
-	nmap_output_name = "{}-nmap".format(args.subdomain_output)
-	nmap_command = ["nmap", "-sC", "-sV", "-p-", "-iL", subdomain_final_name, "-oA", nmap_output_name, "-T2"]
+	masscan_output_name = "{}-masscan".format(args.subdomain_output)
+	nmap_command = ["sudo", "dnmasscan", subdomain_file_name, masscan_output_name, "-p-", "--max-rate", "18000"]
 	if args.verbose:
 		nmap_command.append("-v")
 	subprocess.run(nmap_command)

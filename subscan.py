@@ -3,6 +3,7 @@
 import argparse
 import subprocess
 import os
+import threading
 
 # Parse the command-line arguments
 parser = argparse.ArgumentParser(description="Scan a list of domains for subdomains using Amass and Subfinder")
@@ -18,9 +19,8 @@ amass_file = "{}-amass.txt".format(args.output_file)
 subfinder_file = "{}-subfinder.txt".format(args.output_file)
 output_file = "{}.txt".format(args.output_file)
 
-# Open the output file for writing
-with open(output_file, "w") as f:
-	# Iterate over the list of domains
+# Define a function to run Amass
+def run_amass():
 	amass_command = ["amass", "enum", "-brute", "-df",  args.input_file, "-o", amass_file, "-config", os.path.expanduser("~/.config/amass/config.ini")]
 	if args.verbose:
 		amass_command.append("-v")
@@ -31,9 +31,10 @@ with open(output_file, "w") as f:
 		amass_command.append("-w")
 		amass_command.append(args.wordlist)
 
-
 	subprocess.run(amass_command)
 
+# Define a function to run Subfinder
+def run_subfinder():
 	subfinder_command = ["subfinder", "-dL", args.input_file, "-all", "-o", subfinder_file, "-silent"]
 	subfinder_command_verbose = ["subfinder", "-dL", args.input_file, "-all", "-o", subfinder_file]
 
@@ -41,6 +42,21 @@ with open(output_file, "w") as f:
 		subprocess.run(subfinder_command_verbose)
 	else:
 		subprocess.run(subfinder_command)
+
+#Create threads
+amass_thread = threading.Thread(target=run_amass)
+subfinder_thread = threading.Thread(target=run_subfinder)
+
+#Start threads
+amass_thread.start()
+subfinder_thread.start()
+
+#Wait for threads to finish
+amass_thread.join()
+subfinder_thread.join()
+
+# Open the output file for writing
+with open(output_file, "w") as f:
 
     # Combine the amass and subfinder output
 	with open(amass_file, "r") as am, open(subfinder_file, "r") as su, open(output_file, "w") as out:
